@@ -1,10 +1,10 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="referrer" content="no-referrer" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>PDJ TROPHY 2026 — ADMIN CONTROL PANEL</title>
+  <title>PDJ TROPHY 2026 â€” ADMIN CONTROL PANEL</title>
   <link rel="icon" type="image/svg+xml" href="favicon.svg" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -35,12 +35,12 @@
 
       <!-- Main Navigation Tabs -->
       <nav class="admin-tabs">
-        <button id="viewDeskBtn" class="tab-btn active">🎛 ADMIN CONTROL</button>
-        <button id="viewAvailableBtn" class="tab-btn">🟢 AVAILABLE (<span id="statAvailableTab">0</span>)</button>
-        <button id="viewSoldBtn" class="tab-btn">🔴 SOLD (<span id="statSoldTab">0</span>)</button>
-        <button id="viewUnsoldBtn" class="tab-btn">❌ UNSOLD (<span id="statUnsoldTab">0</span>)</button>
-        <button id="viewTeamsBtn" class="tab-btn">👥 TEAMS</button>
-        <button id="viewHistoryBtn" class="tab-btn">📜 HISTORY</button>
+        <button id="viewDeskBtn" class="tab-btn active">ðŸŽ› ADMIN CONTROL</button>
+        <button id="viewAvailableBtn" class="tab-btn">ðŸŸ¢ AVAILABLE (<span id="statAvailableTab">0</span>)</button>
+        <button id="viewSoldBtn" class="tab-btn">ðŸ”´ SOLD (<span id="statSoldTab">0</span>)</button>
+        <button id="viewUnsoldBtn" class="tab-btn">âŒ UNSOLD (<span id="statUnsoldTab">0</span>)</button>
+        <button id="viewTeamsBtn" class="tab-btn">ðŸ‘¥ TEAMS</button>
+        <button id="viewHistoryBtn" class="tab-btn">ðŸ“œ HISTORY</button>
       </nav>
 
       <!-- Quick Controls & Actions -->
@@ -55,32 +55,32 @@
         <!-- Live Accent Theme Selector -->
         <div class="theme-picker-box" title="Select broadcast accent theme for projector">
           <span class="theme-picker-lbl">THEME:</span>
-          <button class="theme-btn active" data-theme="green" title="Green Theme">🟢</button>
-          <button class="theme-btn" data-theme="blue" title="Blue Theme">🔵</button>
-          <button class="theme-btn" data-theme="orange" title="Orange Theme">🟠</button>
-          <button class="theme-btn" data-theme="red" title="Red Theme">🔴</button>
-          <button class="theme-btn" data-theme="yellow" title="Yellow Theme">🟡</button>
+          <button class="theme-btn active" data-theme="green" title="Green Theme">ðŸŸ¢</button>
+          <button class="theme-btn" data-theme="blue" title="Blue Theme">ðŸ”µ</button>
+          <button class="theme-btn" data-theme="orange" title="Orange Theme">ðŸŸ </button>
+          <button class="theme-btn" data-theme="red" title="Red Theme">ðŸ”´</button>
+          <button class="theme-btn" data-theme="yellow" title="Yellow Theme">ðŸŸ¡</button>
         </div>
 
         <!-- Projector Squad Showcase Selector -->
         <div class="squad-broadcast-picker" title="Display team squad roster on projector">
-          <label for="projectorSquadSelect">📺 SQUAD:</label>
+          <label for="projectorSquadSelect">ðŸ“º SQUAD:</label>
           <select id="projectorSquadSelect">
             <option value="">-- Live Auction --</option>
           </select>
-          <button id="resumeAuctionBtn" class="btn-cute-action danger" title="Resume Live Auction on Projector">✖</button>
+          <button id="resumeAuctionBtn" class="btn-cute-action danger" title="Resume Live Auction on Projector">âœ–</button>
         </div>
 
         <label class="btn-cute-action success" title="Import player list Excel/CSV file">
-          📥 IMPORT
+          ðŸ“¥ IMPORT
           <input id="fileInputHeader" type="file" accept=".xlsx,.xls,.csv" hidden>
         </label>
 
-        <button id="resetAuctionHeaderBtn" class="btn-cute-action danger" title="End all current work & reset for new auction import">🗑️ RESET WORK</button>
-        <button id="deleteAllDataBtn" class="btn-cute-action danger" style="background:#b91c1c; border-color:#991b1b; color:#fff;" title="Delete all players, teams, and auction data permanently">⚠️ DELETE ALL DATA</button>
-        <button id="downloadExcelHeaderBtn" class="btn-cute-action info" title="Export latest database to Excel">📤 EXPORT</button>
-        <button id="headerCreateTeamBtn" class="btn-cute-action success" title="Create new team">➕ Create Team</button>
-        <button id="openProjectorBtn" class="btn-cute-action primary" title="Open Audience Projector Window">📺 PROJECTOR</button>
+        <button id="resetAuctionHeaderBtn" class="btn-cute-action danger" title="End all current work & reset for new auction import">ðŸ—‘ï¸ RESET WORK</button>
+        <button id="deleteAllDataBtn" class="btn-cute-action danger" style="background:#b91c1c; border-color:#991b1b; color:#fff;" title="Delete all players, teams, and auction data permanently">âš ï¸ DELETE ALL DATA</button>
+        <button id="downloadExcelHeaderBtn" class="btn-cute-action info" title="Export latest database to Excel">ðŸ“¤ EXPORT</button>
+        <button id="headerCreateTeamBtn" class="btn-cute-action success" title="Create new team">âž• Create Team</button>
+        <button id="openProjectorBtn" class="btn-cute-action primary" title="Open Audience Projector Window">ðŸ“º PROJECTOR</button>
       </div>
     </header>
 
@@ -91,24 +91,25 @@
         <strong id="stageStatusLabel">STAGE: PRE-AUCTION WAITING</strong>
       </div>
       <div class="stage-action-buttons">
-        <button id="btnPreAuction" class="btn-stage info" title="Show Pre-Auction Waiting Card on Projector">⏳ PRE-AUCTION CARD</button>
-        <button id="btnStartCountdown" class="btn-stage start" title="Start 10s countdown broadcast on projector">▶ START COUNTDOWN</button>
-        <button id="btnStartBreak" class="btn-stage pause" title="Pause active auction & set break timer">⏸ START BREAK</button>
-        <button id="btnEndAuction" class="btn-stage stop" title="Finish auction & show final summary">⏹ END AUCTION</button>
+        <button id="btnPreAuction" class="btn-stage info" title="Show Pre-Auction Waiting Card on Projector">â³ PRE-AUCTION CARD</button>
+        <button id="btnStartCountdown" class="btn-stage start" title="Start 10s countdown broadcast on projector">â–¶ START COUNTDOWN</button>
+        <button id="btnStopCountdown" class="btn-stage stop" title="Stop the 10s countdown" style="display:none;">⏹️ STOP COUNTDOWN</button>
+        <button id="btnStartBreak" class="btn-stage pause" title="Pause active auction & set break timer">â¸ START BREAK</button>
+        <button id="btnEndAuction" class="btn-stage stop" title="Finish auction & show final summary">â¹ END AUCTION</button>
       </div>
     </section>
 
     <!-- End Summary Team Reveal Bar (Appears when Auction is Completed) -->
     <section id="endAuctionTeamRevealBar" class="end-team-reveal-bar hidden">
       <div class="reveal-bar-title">
-        <span>📺 REVEAL TEAMS ON PROJECTOR ONE-BY-ONE:</span>
+        <span>ðŸ“º REVEAL TEAMS ON PROJECTOR ONE-BY-ONE:</span>
       </div>
       <div id="revealTeamButtonsContainer" class="reveal-team-buttons">
         <!-- Dynamically rendered team reveal toggle buttons -->
       </div>
       <div style="display:flex; gap:6px;">
-        <button id="btnRevealAllTeams" class="btn-cute-action success" style="font-size:11px;">👁 REVEAL ALL TEAMS</button>
-        <button id="btnHideAllTeams" class="btn-cute-action danger" style="font-size:11px;">🙈 HIDE ALL TEAMS</button>
+        <button id="btnRevealAllTeams" class="btn-cute-action success" style="font-size:11px;">ðŸ‘ REVEAL ALL TEAMS</button>
+        <button id="btnHideAllTeams" class="btn-cute-action danger" style="font-size:11px;">ðŸ™ˆ HIDE ALL TEAMS</button>
       </div>
     </section>
 
@@ -133,38 +134,38 @@
 
         <div class="hero-right-actions">
           <div class="admin-search-box" title="Quick Search & Jump to any player by Name or CricHeroes ID">
-            <input list="adminPlayerSearchDatalist" id="adminPlayerSearchInput" placeholder="🔍 Search & Jump Player..." autocomplete="off">
+            <input list="adminPlayerSearchDatalist" id="adminPlayerSearchInput" placeholder="ðŸ” Search & Jump Player..." autocomplete="off">
             <datalist id="adminPlayerSearchDatalist"></datalist>
           </div>
-          <button id="randomPickBtn" class="btn-cute-hero success">⚡ PICK RANDOM PLAYER (<span id="activeRoleLabel">ALL</span>)</button>
-          <button id="undoBtn" class="btn-cute-hero secondary">↩ UNDO</button>
-          <button id="redoBtn" class="btn-cute-hero secondary">↪ REDO</button>
+          <button id="randomPickBtn" class="btn-cute-hero success">âš¡ PICK RANDOM PLAYER (<span id="activeRoleLabel">ALL</span>)</button>
+          <button id="undoBtn" class="btn-cute-hero secondary">â†© UNDO</button>
+          <button id="redoBtn" class="btn-cute-hero secondary">â†ª REDO</button>
           
           <div class="nav-arrows">
-            <button id="prev" title="Previous Player">◀</button>
-            <button id="next" title="Next Player">▶</button>
+            <button id="prev" title="Previous Player">â—€</button>
+            <button id="next" title="Next Player">â–¶</button>
           </div>
         </div>
       </div>
 
       <!-- Bottom Row: Dedicated Horizontal Slider for Role & Unsold Filters -->
       <div class="role-filters-slider-container">
-        <button class="slider-arrow left" id="filterScrollLeft" title="Scroll Left Filters">◀</button>
+        <button class="slider-arrow left" id="filterScrollLeft" title="Scroll Left Filters">â—€</button>
         <div class="role-filters" id="roleFiltersScroll">
           <button class="role-filter-btn active" data-role="ALL">ALL ROLES</button>
-          <button class="role-filter-btn" data-role="BATSMEN">🏏 BATSMEN</button>
-          <button class="role-filter-btn" data-role="BOWLERS">🎯 BOWLERS</button>
-          <button class="role-filter-btn" data-role="ALL-ROUNDERS">⚡ ALL-ROUNDERS</button>
-          <button class="role-filter-btn" data-role="WICKET-KEEPERS">🧤 WICKET-KEEPERS</button>
-          <button class="role-filter-btn unsold-filter-btn" data-role="UNSOLD_1">🔄 UNSOLD LIST 1 (<span id="statUnsold1Count">0</span>)</button>
-          <button class="role-filter-btn unsold-filter-btn" data-role="UNSOLD_2">🔄 UNSOLD LIST 2 (<span id="statUnsold2Count">0</span>)</button>
-          <button class="role-filter-btn unsold-filter-btn" data-role="UNSOLD_3">🔄 UNSOLD LIST 3 (<span id="statUnsold3Count">0</span>)</button>
-          <button class="role-filter-btn unsold-filter-btn" data-role="UNSOLD_4" id="btnUnsold4">🔄 UNSOLD LIST 4 (<span id="statUnsold4Count">0</span>)</button>
-          <button class="role-filter-btn unsold-filter-btn" data-role="UNSOLD_5" id="btnUnsold5">🔄 UNSOLD LIST 5 (<span id="statUnsold5Count">0</span>)</button>
-          <button class="role-filter-btn unsold-filter-btn" data-role="UNSOLD_6" id="btnUnsold6">🔄 UNSOLD LIST 6 (<span id="statUnsold6Count">0</span>)</button>
-          <button class="role-filter-btn unsold-filter-btn" data-role="UNSOLD_7" id="btnUnsold7">🔄 UNSOLD LIST 7 (<span id="statUnsold7Count">0</span>)</button>
+          <button class="role-filter-btn" data-role="BATSMEN">ðŸ BATSMEN</button>
+          <button class="role-filter-btn" data-role="BOWLERS">ðŸŽ¯ BOWLERS</button>
+          <button class="role-filter-btn" data-role="ALL-ROUNDERS">âš¡ ALL-ROUNDERS</button>
+          <button class="role-filter-btn" data-role="WICKET-KEEPERS">ðŸ§¤ WICKET-KEEPERS</button>
+          <button class="role-filter-btn unsold-filter-btn" data-role="UNSOLD_1">ðŸ”„ UNSOLD LIST 1 (<span id="statUnsold1Count">0</span>)</button>
+          <button class="role-filter-btn unsold-filter-btn" data-role="UNSOLD_2">ðŸ”„ UNSOLD LIST 2 (<span id="statUnsold2Count">0</span>)</button>
+          <button class="role-filter-btn unsold-filter-btn" data-role="UNSOLD_3">ðŸ”„ UNSOLD LIST 3 (<span id="statUnsold3Count">0</span>)</button>
+          <button class="role-filter-btn unsold-filter-btn" data-role="UNSOLD_4" id="btnUnsold4">ðŸ”„ UNSOLD LIST 4 (<span id="statUnsold4Count">0</span>)</button>
+          <button class="role-filter-btn unsold-filter-btn" data-role="UNSOLD_5" id="btnUnsold5">ðŸ”„ UNSOLD LIST 5 (<span id="statUnsold5Count">0</span>)</button>
+          <button class="role-filter-btn unsold-filter-btn" data-role="UNSOLD_6" id="btnUnsold6">ðŸ”„ UNSOLD LIST 6 (<span id="statUnsold6Count">0</span>)</button>
+          <button class="role-filter-btn unsold-filter-btn" data-role="UNSOLD_7" id="btnUnsold7">ðŸ”„ UNSOLD LIST 7 (<span id="statUnsold7Count">0</span>)</button>
         </div>
-        <button class="slider-arrow right" id="filterScrollRight" title="Scroll Right Filters">▶</button>
+        <button class="slider-arrow right" id="filterScrollRight" title="Scroll Right Filters">â–¶</button>
       </div>
     </section>
 
@@ -178,13 +179,13 @@
 
         <div class="photo-upload-row">
           <label class="btn-cute-sub" title="Upload new photo file for current player">
-            📷 Upload Image
+            ðŸ“· Upload Image
             <input id="playerPhotoFileInput" type="file" accept="image/*" hidden>
           </label>
-          <button id="openPlayerPhotoUrlBtn" class="btn-cute-sub" title="Paste image URL or Google Drive link">🔗 Paste URL</button>
+          <button id="openPlayerPhotoUrlBtn" class="btn-cute-sub" title="Paste image URL or Google Drive link">ðŸ”— Paste URL</button>
         </div>
 
-        <h2 id="name">—</h2>
+        <h2 id="name">â€”</h2>
         <span class="role" id="role">ALL-ROUNDER</span>
 
         <div class="pill-row">
@@ -196,9 +197,9 @@
           <div class="info-row"><span>PLAYER TYPE</span><b id="category">All-rounder</b></div>
           <div class="info-row"><span>PLAYER STYLE</span><b id="speciality">Right Hand Batsman/Bowler</b></div>
           <div class="info-row"><span>PROFESSION</span><b id="profession">Lawyer/Advocate</b></div>
-          <div class="info-row"><span>PHONE NUMBER</span><b id="phone">—</b></div>
+          <div class="info-row"><span>PHONE NUMBER</span><b id="phone">â€”</b></div>
           <div class="info-row"><span>AGE</span><b id="age">26 years</b></div>
-          <div class="info-row"><span>CRICHEROES ID</span><b id="cricId">—</b></div>
+          <div class="info-row"><span>CRICHEROES ID</span><b id="cricId">â€”</b></div>
           <div class="info-row" style="grid-column: 1 / -1;"><span>AUCTION STATUS</span><b id="team">Not assigned</b></div>
         </div>
       </article>
@@ -206,7 +207,7 @@
       <!-- Right Column (~60%): Fast Live Auction Control Console -->
       <article class="auction-panel">
         <div class="section-head flex">
-          <p class="panel-tag">⚡ LIVE AUCTION CONTROL CONSOLE</p>
+          <p class="panel-tag">âš¡ LIVE AUCTION CONTROL CONSOLE</p>
           <span id="status" class="status available">AVAILABLE</span>
         </div>
 
@@ -236,7 +237,7 @@
             <button class="btn-bid-step bid-btn" data-pts="500" title="Shortcut: 3">+500 <kbd>[3]</kbd></button>
             <button class="btn-bid-step bid-btn" data-pts="1000" title="Shortcut: 4">+1000 <kbd>[4]</kbd></button>
             <button class="btn-bid-step bid-btn" data-pts="2000" title="Shortcut: 5">+2000 <kbd>[5]</kbd></button>
-            <button id="undoBidBtn" class="btn-bid-step undo-bid" title="Shortcut: Z">↩ UNDO BID <kbd>[Z]</kbd></button>
+            <button id="undoBidBtn" class="btn-bid-step undo-bid" title="Shortcut: Z">â†© UNDO BID <kbd>[Z]</kbd></button>
 
             <div style="display:inline-flex; align-items:center; gap:4px; margin-left: auto;">
               <input type="number" id="customPointsInput" placeholder="Set Bid..." step="100">
@@ -254,7 +255,7 @@
 
         <!-- Small Unobtrusive Keyboard Shortcut Legend -->
         <div class="keyboard-shortcuts-hint" style="font-family:'DM Mono',monospace; font-size:10px; font-weight:700; color:#64748b; text-align:right; margin:4px 0 2px;">
-          SHORTCUTS: <span style="color:#0f172a; font-weight:800;">1–5</span> BID &nbsp;•&nbsp; <span style="color:#0f172a; font-weight:800;">Z</span> UNDO &nbsp;•&nbsp; <span style="color:#0f172a; font-weight:800;">S</span> SELL &nbsp;•&nbsp; <span style="color:#0f172a; font-weight:800;">U</span> UNSOLD
+          SHORTCUTS: <span style="color:#0f172a; font-weight:800;">1â€“5</span> BID &nbsp;â€¢&nbsp; <span style="color:#0f172a; font-weight:800;">Z</span> UNDO &nbsp;â€¢&nbsp; <span style="color:#0f172a; font-weight:800;">S</span> SELL &nbsp;â€¢&nbsp; <span style="color:#0f172a; font-weight:800;">U</span> UNSOLD
         </div>
 
         <!-- Fast Execution Action Bar (Huge SELL & UNSOLD Buttons - NO CONFIRMATION POPUPS!) -->
@@ -264,7 +265,7 @@
             <span class="sell-sub">Pick bidding team above</span>
           </button>
           <button id="markUnsoldBtn" class="btn-huge-unsold" title="Shortcut: U">
-            ❌ MARK UNSOLD <kbd>[U]</kbd>
+            âŒ MARK UNSOLD <kbd>[U]</kbd>
           </button>
         </div>
       </article>
@@ -276,11 +277,11 @@
   <!-- 1. SELL PLAYER CONFIRMATION DIALOG -->
   <dialog id="teamDialog">
     <form id="teamForm" method="dialog">
-      <button type="button" class="close" id="closeTeamDialog">×</button>
+      <button type="button" class="close" id="closeTeamDialog">Ã—</button>
       <h3 id="dialogName">SELL PLAYER</h3>
       
       <div class="confirm-sale-details" style="background:#f8fafc; border:1px solid #e2e8f0; padding:12px; border-radius:8px; margin-bottom:14px;">
-        <div style="font-size:13px; font-weight:800; color:#0f172a; margin-bottom:4px;">Player: <span id="confirmPlayerName" style="color:#2563eb;">—</span></div>
+        <div style="font-size:13px; font-weight:800; color:#0f172a; margin-bottom:4px;">Player: <span id="confirmPlayerName" style="color:#2563eb;">â€”</span></div>
         <div style="font-size:13px; font-weight:800; color:#0f172a;">Final Bid: <span id="confirmBidPoints" style="color:#16a34a;">6700 POINTS</span></div>
       </div>
 
@@ -305,11 +306,11 @@
   <!-- 2. MARK UNSOLD CONFIRMATION DIALOG -->
   <dialog id="confirmUnsoldDialog">
     <form id="unsoldForm" method="dialog">
-      <button type="button" class="close" id="closeUnsoldConfirmDialog">×</button>
+      <button type="button" class="close" id="closeUnsoldConfirmDialog">Ã—</button>
       <h3 style="color:#dc2626;">MARK PLAYER UNSOLD?</h3>
       
       <div style="background:#fef2f2; border:1px solid #fecaca; padding:14px; border-radius:8px; margin:12px 0;">
-        <div style="font-size:14px; font-weight:800; color:#991b1b;">Player: <span id="unsoldConfirmPlayerName">—</span></div>
+        <div style="font-size:14px; font-weight:800; color:#991b1b;">Player: <span id="unsoldConfirmPlayerName">â€”</span></div>
         <p style="font-size:11px; color:#b91c1c; margin:6px 0 0;">This player will be marked UNSOLD and moved to the Unsold list. They can be re-auctioned later.</p>
       </div>
 
@@ -323,11 +324,11 @@
   <!-- 3. TEAM CORRECTION DIALOG -->
   <dialog id="editTeamDialog">
     <form id="editTeamForm" method="dialog">
-      <button type="button" class="close" id="closeEditTeamDialog">×</button>
+      <button type="button" class="close" id="closeEditTeamDialog">Ã—</button>
       <h3>CHANGE PLAYER TEAM</h3>
       
       <div style="background:#f0f9ff; border:1px solid #bae6fd; padding:12px; border-radius:8px; margin-bottom:14px;">
-        <div style="font-size:13px; font-weight:800; color:#0369a1;">Player: <span id="editTeamPlayerName">—</span></div>
+        <div style="font-size:13px; font-weight:800; color:#0369a1;">Player: <span id="editTeamPlayerName">â€”</span></div>
         <div style="font-size:12px; font-weight:700; color:#0284c7; margin-top:4px;">Current Team: <span id="editTeamCurrentVal">Team Alpha</span></div>
       </div>
 
@@ -347,8 +348,8 @@
   <!-- Create New Team Dialog -->
   <dialog id="createTeamDialog">
     <form id="createTeamForm" method="dialog">
-      <button type="button" class="close" id="closeCreateTeamDialog">×</button>
-      <h3>🛡️ CREATE NEW AUCTION TEAM</h3>
+      <button type="button" class="close" id="closeCreateTeamDialog">Ã—</button>
+      <h3>ðŸ›¡ï¸ CREATE NEW AUCTION TEAM</h3>
       <label>
         Team Name:
         <input type="text" id="newTeamName" placeholder="e.g. Royal Strikers" required>
@@ -369,7 +370,7 @@
         Maximum Squad Players:
         <input type="number" id="newTeamMaxPlayers" value="11" min="1" required>
       </label>
-      <button type="submit" class="save">➕ SAVE NEW TEAM</button>
+      <button type="submit" class="save">âž• SAVE NEW TEAM</button>
     </form>
   </dialog>
 
@@ -377,8 +378,8 @@
   <dialog id="availableModal" class="dashboard-modal">
     <div class="modal-content">
       <div class="modal-header">
-        <h3>🟢 AVAILABLE PLAYERS (<span id="modalAvailableTotal">0</span>)</h3>
-        <button class="close-modal" id="closeAvailableModal">×</button>
+        <h3>ðŸŸ¢ AVAILABLE PLAYERS (<span id="modalAvailableTotal">0</span>)</h3>
+        <button class="close-modal" id="closeAvailableModal">Ã—</button>
       </div>
       <div class="modal-body" id="availableListContainer"></div>
     </div>
@@ -388,8 +389,8 @@
   <dialog id="soldModal" class="dashboard-modal">
     <div class="modal-content">
       <div class="modal-header">
-        <h3>🏆 SOLD PLAYERS (<span id="modalSoldTotal">0</span>)</h3>
-        <button class="close-modal" id="closeSoldModal">×</button>
+        <h3>ðŸ† SOLD PLAYERS (<span id="modalSoldTotal">0</span>)</h3>
+        <button class="close-modal" id="closeSoldModal">Ã—</button>
       </div>
       <div class="modal-body" id="soldListContainer"></div>
     </div>
@@ -399,8 +400,8 @@
   <dialog id="unsoldModal" class="dashboard-modal">
     <div class="modal-content">
       <div class="modal-header">
-        <h3>❌ UNSOLD PLAYERS (<span id="modalUnsoldTotal">0</span>)</h3>
-        <button class="close-modal" id="closeUnsoldModal">×</button>
+        <h3>âŒ UNSOLD PLAYERS (<span id="modalUnsoldTotal">0</span>)</h3>
+        <button class="close-modal" id="closeUnsoldModal">Ã—</button>
       </div>
       <div class="modal-body" id="unsoldListContainer"></div>
     </div>
@@ -410,11 +411,11 @@
   <dialog id="teamSettingsModal" class="dashboard-modal">
     <div class="modal-content">
       <div class="modal-header">
-        <h3>⚙️ MANAGE TEAMS & PURSE</h3>
-        <button class="close-modal" id="closeTeamSettingsModal">×</button>
+        <h3>âš™ï¸ MANAGE TEAMS & PURSE</h3>
+        <button class="close-modal" id="closeTeamSettingsModal">Ã—</button>
       </div>
       <div class="modal-body">
-        <button id="addNewTeamBtn" class="btn-cute-hero success" style="width:100%; margin-bottom:14px;">➕ Create New Team</button>
+        <button id="addNewTeamBtn" class="btn-cute-hero success" style="width:100%; margin-bottom:14px;">âž• Create New Team</button>
         <div id="teamSettingsContainer"></div>
       </div>
     </div>
@@ -424,11 +425,11 @@
   <dialog id="teamsModal" class="dashboard-modal">
     <div class="modal-content">
       <div class="modal-header">
-        <h3>🛡️ TEAM SQUADS & MANAGEMENT</h3>
+        <h3>ðŸ›¡ï¸ TEAM SQUADS & MANAGEMENT</h3>
         <div style="display:flex; gap:8px; align-items:center;">
-          <button id="modalCreateTeamBtn" class="btn-cute-action success" style="font-size:10px;">➕ Create Team</button>
-          <button id="modalManageTeamsBtn" class="btn-cute-action info" style="font-size:10px;">⚙️ Delete/Manage Teams</button>
-          <button class="close-modal" id="closeTeamsModal">×</button>
+          <button id="modalCreateTeamBtn" class="btn-cute-action success" style="font-size:10px;">âž• Create Team</button>
+          <button id="modalManageTeamsBtn" class="btn-cute-action info" style="font-size:10px;">âš™ï¸ Delete/Manage Teams</button>
+          <button class="close-modal" id="closeTeamsModal">Ã—</button>
         </div>
       </div>
       <div class="modal-body" id="teamsContainer"></div>
@@ -439,8 +440,8 @@
   <dialog id="historyModal" class="dashboard-modal">
     <div class="modal-content">
       <div class="modal-header">
-        <h3>📜 AUCTION HISTORY LOG</h3>
-        <button class="close-modal" id="closeHistoryModal">×</button>
+        <h3>ðŸ“œ AUCTION HISTORY LOG</h3>
+        <button class="close-modal" id="closeHistoryModal">Ã—</button>
       </div>
       <div class="modal-body" id="historyLogContainer"></div>
     </div>
@@ -450,8 +451,8 @@
   <dialog id="breakModal" class="dashboard-modal">
     <div class="modal-content" style="max-width:480px;">
       <div class="modal-header">
-        <h3>⏸ AUCTION BREAK CONTROLS</h3>
-        <button class="close-modal" id="closeBreakModal">×</button>
+        <h3>â¸ AUCTION BREAK CONTROLS</h3>
+        <button class="close-modal" id="closeBreakModal">Ã—</button>
       </div>
       <div class="modal-body" style="text-align:center;">
         <div style="font-size:48px; font-weight:800; font-family:'DM Mono', monospace; color:var(--orange); margin:10px 0;" id="breakDisplayTimer">05:00</div>
@@ -466,12 +467,12 @@
         </div>
 
         <div style="display:flex; justify-content:center; gap:8px; margin:8px 0 15px; flex-wrap:wrap;">
-          <button id="btnBreakStop" class="btn-cute-action danger" title="Stop the break countdown">⏹ STOP</button>
-          <button id="btnBreakReset" class="btn-cute-action info" title="Reset countdown to 5:00">🔄 RESET (5:00)</button>
+          <button id="btnBreakStop" class="btn-cute-action danger" title="Stop the break countdown">â¹ STOP</button>
+          <button id="btnBreakReset" class="btn-cute-action info" title="Reset countdown to 5:00">ðŸ”„ RESET (5:00)</button>
         </div>
 
         <div style="margin-top:20px; display:flex; gap:10px; justify-content:center;">
-          <button id="btnResumeBreakCountdown" class="btn-cute-hero success" style="width:100%;">▶ RESUME AUCTION (COUNTDOWN 10s)</button>
+          <button id="btnResumeBreakCountdown" class="btn-cute-hero success" style="width:100%;">â–¶ RESUME AUCTION (COUNTDOWN 10s)</button>
         </div>
       </div>
     </div>
@@ -481,8 +482,8 @@
   <dialog id="endAuctionDialog" class="dashboard-modal">
     <div class="modal-content" style="max-width:440px;">
       <div class="modal-header" style="background:#fee2e2; color:#991b1b;">
-        <h3>⚠️ END PDJ TROPHY 2026 AUCTION?</h3>
-        <button class="close-modal" id="closeEndAuctionModal">×</button>
+        <h3>âš ï¸ END PDJ TROPHY 2026 AUCTION?</h3>
+        <button class="close-modal" id="closeEndAuctionModal">Ã—</button>
       </div>
       <div class="modal-body" style="text-align:center; padding:20px;">
         <p style="font-size:14px; font-weight:700; color:#334155;">Are you sure you want to finish the live auction?</p>
@@ -490,7 +491,7 @@
 
         <div style="margin-top:20px; display:flex; gap:10px; justify-content:center;">
           <button id="btnCancelEndAuction" class="btn-cute-action secondary">CANCEL</button>
-          <button id="btnConfirmEndAuction" class="btn-cute-hero danger" style="background:#dc2626;">⏹ YES, END AUCTION</button>
+          <button id="btnConfirmEndAuction" class="btn-cute-hero danger" style="background:#dc2626;">â¹ YES, END AUCTION</button>
         </div>
       </div>
     </div>
@@ -500,8 +501,8 @@
   <dialog id="resetAuctionDialog" class="dashboard-modal">
     <div class="modal-content" style="max-width:460px;">
       <div class="modal-header" style="background:#fee2e2; color:#991b1b;">
-        <h3>🗑️ RESET ALL AUCTION WORK?</h3>
-        <button class="close-modal" id="closeResetAuctionModal">×</button>
+        <h3>ðŸ—‘ï¸ RESET ALL AUCTION WORK?</h3>
+        <button class="close-modal" id="closeResetAuctionModal">Ã—</button>
       </div>
       <div class="modal-body" style="text-align:center; padding:20px;">
         <p style="font-size:14px; font-weight:700; color:#334155; margin-bottom:10px;">Are you sure you want to end all current work and start fresh?</p>
@@ -518,8 +519,8 @@
   <dialog id="deleteAllDataModal" class="dashboard-modal">
     <div class="modal-content" style="max-width:460px;">
       <div class="modal-header" style="background:#7f1d1d; color:#fef2f2;">
-        <h3>⚠️ DELETE ALL EXISTING DATA?</h3>
-        <button class="close-modal" id="closeDeleteAllDataModal">×</button>
+        <h3>âš ï¸ DELETE ALL EXISTING DATA?</h3>
+        <button class="close-modal" id="closeDeleteAllDataModal">Ã—</button>
       </div>
       <div class="modal-body" style="text-align:center; padding:20px;">
         <p style="font-size:15px; font-weight:800; color:#991b1b; margin-bottom:10px;">Warning: Permanent Data Erasure!</p>
@@ -533,4 +534,5 @@
   </dialog>
 </body>
 </html>
+
 

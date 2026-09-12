@@ -1603,19 +1603,32 @@ window.reAuctionPlayer = function(index) {
   render();
 };
 
+let countdownBroadcastTimer = null;
+
 function startCountdownBroadcast(isResume = false) {
+  if (countdownBroadcastTimer) { clearTimeout(countdownBroadcastTimer); countdownBroadcastTimer = null; }
   auctionPhase = 'COUNTDOWN';
   broadcastOverlay = {
     type: 'COUNTDOWN',
     isResume,
     timestamp: Date.now()
   };
-  showToast(`▶ Countdown broadcast started!`, 'success');
+  showToast(`🎬 Countdown broadcast started!`, 'success');
   addHistory(`Admin triggered ${isResume ? 'resume' : 'start'} countdown broadcast.`);
   syncStateToServer();
   render();
 
-  setTimeout(() => {
+  const stopBtn = document.getElementById('btnStopCountdown');
+  const startBtn = document.getElementById('btnStartCountdown');
+  if (stopBtn) stopBtn.style.display = '';
+  if (startBtn) startBtn.style.display = 'none';
+
+  countdownBroadcastTimer = setTimeout(() => {
+    countdownBroadcastTimer = null;
+    const sb = document.getElementById('btnStopCountdown');
+    const stb = document.getElementById('btnStartCountdown');
+    if (sb) sb.style.display = 'none';
+    if (stb) stb.style.display = '';
     auctionPhase = 'LIVE_AUCTION';
     broadcastOverlay = null;
     activeSoldEvent = null;
@@ -1623,6 +1636,20 @@ function startCountdownBroadcast(isResume = false) {
     syncStateToServer();
     render();
   }, 11500);
+}
+
+function stopCountdownBroadcast() {
+  if (countdownBroadcastTimer) { clearTimeout(countdownBroadcastTimer); countdownBroadcastTimer = null; }
+  const stopBtn = document.getElementById('btnStopCountdown');
+  const startBtn = document.getElementById('btnStartCountdown');
+  if (stopBtn) stopBtn.style.display = 'none';
+  if (startBtn) startBtn.style.display = '';
+  auctionPhase = 'LIVE_AUCTION';
+  broadcastOverlay = null;
+  showToast('⏹️ Countdown stopped.', 'info');
+  addHistory('Admin stopped the 10s countdown broadcast.');
+  syncStateToServer();
+  render();
 }
 
 function startBreakMode() {
@@ -1890,6 +1917,9 @@ function initEventListeners() {
 
   const btnStartCountdown = $('btnStartCountdown');
   if (btnStartCountdown) btnStartCountdown.onclick = () => startCountdownBroadcast(false);
+
+  const btnStopCountdown = $('btnStopCountdown');
+  if (btnStopCountdown) btnStopCountdown.onclick = () => stopCountdownBroadcast();
 
   const btnStartBreak = $('btnStartBreak');
   if (btnStartBreak) btnStartBreak.onclick = () => startBreakMode();
