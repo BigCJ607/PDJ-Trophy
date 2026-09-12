@@ -81,15 +81,6 @@ function safeSetVal(id, val) {
   if (el) el.value = val;
 }
 
-function showToast(message, type = 'success') {
-  const toast = $('toast');
-  if (!toast) return;
-  toast.textContent = message;
-  toast.className = `toast ${type}`;
-  setTimeout(() => {
-    toast.className = 'toast hidden';
-  }, 4000);
-}
 
 function addHistory(text) {
   const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
@@ -255,52 +246,7 @@ function undoLastAction() {
   updateUndoRedoUI();
 }
 
-function redoNextAction() {
-  if (!redoStack.length) {
-    showToast('⚠️ Nothing to redo.', 'error');
-    return;
-  }
 
-  const currentSnap = JSON.stringify({
-    players: JSON.parse(JSON.stringify(players)),
-    current,
-    defaultBasePoints,
-    biddingPoints,
-    highestTeam,
-    activeSquadDisplay,
-    theme_color: currentTheme,
-    auctionPhase,
-    broadcastOverlay
-  });
-  undoStack.push(currentSnap);
-
-  const nextSnap = JSON.parse(redoStack.pop());
-  players = nextSnap.players;
-  current = nextSnap.current;
-  defaultBasePoints = nextSnap.defaultBasePoints || 1000;
-  biddingPoints = nextSnap.biddingPoints || defaultBasePoints;
-  highestTeam = nextSnap.highestTeam || '';
-  activeSquadDisplay = nextSnap.activeSquadDisplay || null;
-  currentTheme = nextSnap.theme_color || 'green';
-  auctionPhase = nextSnap.auctionPhase || 'LIVE_AUCTION';
-  broadcastOverlay = nextSnap.broadcastOverlay || null;
-
-  showToast('↪ Redid 1 step!', 'success');
-  addHistory('Auctioneer executed REDO.');
-  syncStateToServer();
-  render();
-  updateUndoRedoUI();
-}
-
-function updateUndoRedoUI() {
-  const undoBtn = $('undoBtn');
-  const undoBidBtn = $('undoBidBtn');
-  const redoBtn = $('redoBtn');
-
-  if (undoBtn) undoBtn.disabled = (undoStack.length === 0);
-  if (undoBidBtn) undoBidBtn.disabled = (undoStack.length === 0);
-  if (redoBtn) redoBtn.disabled = (redoStack.length === 0);
-}
 
 // REAL-TIME SYNCHRONIZATION WITH SUPABASE & SERVER
 function syncStateToServer(animationEvent = null) {
@@ -505,15 +451,7 @@ function validateTeamPointLimit(teamName, attemptedPoints) {
   return { valid: true };
 }
 
-function safeSetText(id, text) {
-  const el = $(id);
-  if (el) el.textContent = text;
-}
 
-function safeSetVal(id, val) {
-  const el = $(id);
-  if (el) el.value = val;
-}
 
 function showToast(message, type = 'info') {
   showToastWithAction(message, type);
@@ -555,9 +493,7 @@ function showToastWithAction(message, type = 'info', actionText = null, actionCa
   }, duration);
 }
 
-function setRoleFilter(filter) {
-  activeRoleFilter = filter || 'ALL';
-}
+
 
 function selectPlayerForAuction(index) {
   if (index < 0 || index >= players.length) return;
@@ -624,50 +560,7 @@ function redoNextAction() {
   render();
 }
 
-// startBreakMode defined below (line ~1643) — single canonical definition
 
-function confirmEndAuction() {
-  auctionPhase = 'AUCTION_COMPLETED';
-  broadcastOverlay = {
-    type: 'AUCTION_COMPLETED',
-    timestamp: Date.now()
-  };
-  showToast('🏁 Auction Completed!', 'success');
-  addHistory('Admin officially completed the auction.');
-  const dlg = $('endAuctionDialog');
-  if (dlg) dlg.close();
-  syncStateToServer();
-  render();
-}
-
-function performFullAuctionReset() {
-  saveStateSnapshot();
-  (players || []).forEach(p => {
-    p['Status'] = 'AVAILABLE';
-    p['Team'] = '';
-    p['Points'] = '';
-    p['unsold_round'] = 0;
-    p['Auction Time'] = '';
-  });
-  current = 0;
-  biddingPoints = 2000;
-  highestTeam = '';
-  activeSquadDisplay = null;
-  currentTheme = 'green';
-  auctionPhase = 'PRE_AUCTION';
-  broadcastOverlay = null;
-    activeSoldEvent = null;
-    activeUnsoldEvent = null;
-  historyLog = [];
-  revealedTeamsInEnd = [];
-
-  showToast('🔄 Full Auction Reset Completed!', 'success');
-  addHistory('Admin performed a full auction reset.');
-  const dlg = $('resetAuctionDialog');
-  if (dlg) dlg.close();
-  syncStateToServer();
-  render();
-}
 
 function performDeleteAllData() {
   saveStateSnapshot();
@@ -681,7 +574,6 @@ function performDeleteAllData() {
   broadcastOverlay = null;
     activeSoldEvent = null;
     activeUnsoldEvent = null;
-  animationEvent = null;
   historyLog = [];
   revealedTeamsInEnd = [];
 
