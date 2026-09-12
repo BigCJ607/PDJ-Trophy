@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="referrer" content="no-referrer">
+  <title>PDJ Trophy 2026 - YouTube Overlay</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&family=Oswald:wght@500;700&display=swap" rel="stylesheet">
+  <!-- Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.0/dist/umd/supabase.min.js"></script>
+  
+  <style>
+    /* =======================================================
+       1. CORE TRANSPARENCY & LAYOUT (1920x1080)
+       ======================================================= */
+    :root {
+      --primary: #0f172a;
+      --accent: #2563eb;
+      --sold: #16a34a;
+      --unsold: #dc2626;
+      --text: #ffffff;
+      --glass: rgba(15, 23, 42, 0.9);
+      --glass-border: rgba(255, 255, 255, 0.15);
+    }
+    
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100vw;
+      height: 100vh;
+      background: transparent !important;
+      background-color: rgba(0, 0, 0, 0) !important;
+      overflow: hidden;
+      font-family: 'Inter', sans-serif;
+    }
+
+    /* Outer Wrapper sets the proportional 1920x1080 container */
+    #broadcast-container {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      pointer-events: none; /* Let clicks pass through if needed */
+    }
+
+    /* =======================================================
+       2. BRANDING (WATERMARK)
+       ======================================================= */
+    #watermark {
+      position: absolute;
+      top: 30px;
+      right: 40px;
+      width: 120px;
+      opacity: 0.9;
+      filter: drop-shadow(0 4px 6px rgba(0,0,0,0.5));
+      transition: opacity 0.5s ease;
+    }
+    #watermark img {
+      width: 100%;
+      height: auto;
+      object-fit: contain;
+    }
+
+    /* =======================================================
+       3. LOWER THIRD CONTAINER
+       ======================================================= */
+    #lower-third {
+      position: absolute;
+      bottom: 60px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      width: 90%;
+      max-width: 1400px;
+      opacity: 0;
+      display: flex;
+      flex-direction: column;
+      transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+      visibility: hidden;
+    }
+
+    #lower-third.visible {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+      visibility: visible;
+    }
+
+    /* =======================================================
+       4. GRAPHIC CARDS
+       ======================================================= */
+    .graphic-card {
+      display: none;
+      background: var(--glass);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1);
+      overflow: hidden;
+      color: var(--text);
+    }
+    .graphic-card.active {
+      display: flex;
+    }
+
+    /* Left Side: Photo */
+    .photo-area {
+      width: 250px;
+      height: 250px;
+      flex-shrink: 0;
+      background: rgba(0,0,0,0.3);
+      position: relative;
+    }
+    .photo-area img {
+      position: relative;
+      z-index: 10;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      object-position: top;
+    }
+    .photo-fallback {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #1e293b;
+      font-size: 80px;
+      color: #334155;
+    }
+
+    /* Right Side: Details */
+    .details-area {
+      padding: 30px 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      flex-grow: 1;
+      position: relative;
+    }
+
+    /* Typography */
+    .player-name {
+      font-family: 'Oswald', sans-serif;
+      font-size: 64px;
+      font-weight: 700;
+      line-height: 1.1;
+      margin: 0 0 10px 0;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .player-meta {
+      font-size: 24px;
+      font-weight: 600;
+      color: #94a3b8;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 20px;
+    }
+    
+    /* Bid / Result Badges */
+    .badge-container {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      margin-top: auto;
+    }
+    
+    .bid-box {
+      background: var(--accent);
+      padding: 12px 30px;
+      border-radius: 8px;
+      font-family: 'Oswald', sans-serif;
+      font-size: 38px;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      box-shadow: 0 4px 15px rgba(37, 99, 235, 0.4);
+    }
+    .bid-label {
+      font-family: 'Inter', sans-serif;
+      font-size: 16px;
+      font-weight: 800;
+      opacity: 0.8;
+      margin-right: 15px;
+      letter-spacing: 1px;
+    }
+
+    /* =======================================================
+       5. SOLD SPECIFIC STYLES
+       ======================================================= */
+    #sold-card {
+      border-color: rgba(22, 163, 74, 0.4);
+      background: linear-gradient(135deg, var(--glass) 0%, rgba(15,23,42,0.95) 100%);
+    }
+    #sold-card .badge-container {
+      justify-content: space-between;
+    }
+    .sold-badge {
+      background: var(--sold);
+      color: white;
+      padding: 5px 15px;
+      border-radius: 4px;
+      font-size: 18px;
+      font-weight: 900;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      position: absolute;
+      top: 25px;
+      right: 40px;
+    }
+    .team-info {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      background: rgba(255,255,255,0.05);
+      padding: 10px 25px;
+      border-radius: 8px;
+    }
+    .team-logo {
+      width: 60px;
+      height: 60px;
+      object-fit: contain;
+    }
+    .team-name {
+      font-size: 28px;
+      font-weight: 800;
+      font-family: 'Oswald', sans-serif;
+      color: #e2e8f0;
+      text-transform: uppercase;
+    }
+    #sold-points {
+      background: var(--sold);
+      box-shadow: 0 4px 15px rgba(22, 163, 74, 0.4);
+    }
+
+    /* =======================================================
+       6. UNSOLD SPECIFIC STYLES
+       ======================================================= */
+    #unsold-card {
+      border-color: rgba(220, 38, 38, 0.4);
+    }
+    .unsold-badge {
+      background: var(--unsold);
+      color: white;
+      padding: 5px 15px;
+      border-radius: 4px;
+      font-size: 18px;
+      font-weight: 900;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      position: absolute;
+      top: 25px;
+      right: 40px;
+    }
+
+    /* =======================================================
+       7. STATUS STATES
+       ======================================================= */
+    #waiting-state {
+      position: absolute;
+      top: 50px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--glass);
+      padding: 10px 30px;
+      border-radius: 30px;
+      border: 1px solid var(--glass-border);
+      color: #94a3b8;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      font-size: 14px;
+      display: none;
+    }
+
+    /* =======================================================
+       8. STATUS OVERLAYS (BREAK, COUNTDOWN, ETC)
+       ======================================================= */
+    .status-overlay {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: var(--text);
+    }
+    .status-card {
+      background: var(--glass);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      padding: 40px 80px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+    }
+    .status-card h2 {
+      font-family: 'Oswald', sans-serif;
+      font-size: 48px;
+      margin: 0;
+      letter-spacing: 2px;
+      color: var(--accent);
+      text-transform: uppercase;
+    }
+    .status-timer {
+      font-family: 'Oswald', sans-serif;
+      font-size: 100px;
+      font-weight: 700;
+      margin: 20px 0;
+      line-height: 1;
+    }
+    .status-msg {
+      font-size: 24px;
+      color: #94a3b8;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    /* =======================================================
+       9. DEBUG OVERLAY
+       ======================================================= */
+    #debug-panel {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background: rgba(0,0,0,0.8);
+      color: #0f0;
+      padding: 10px;
+      font-family: monospace;
+      font-size: 12px;
+      border-radius: 4px;
+      display: none;
+      z-index: 9999;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- DEBUG PANEL (Press 'D' to toggle) -->
+  <div id="debug-panel">
+    <div>State: <span id="dbg-state">-</span></div>
+    <div>Conn: <span id="dbg-conn">-</span></div>
+    <div>Update: <span id="dbg-time">-</span></div>
+  </div>
+
+  <div id="broadcast-container">
+    
+    <!-- BRANDING WATERMARK -->
+    <div id="watermark">
+      <img src="pdj_logo.png" alt="PDJ Trophy">
+    </div>
+
+    <!-- WAITING STATE -->
+    <div id="waiting-state">WAITING FOR AUCTION</div>
+
+    <!-- BREAK OVERLAY -->
+    <div id="break-overlay" class="status-overlay">
+      <div class="status-card">
+        <h2>AUCTION BREAK</h2>
+        <div id="break-timer" class="status-timer">05:00</div>
+        <p id="break-message" class="status-msg">AUCTION WILL RESUME SHORTLY</p>
+      </div>
+    </div>
+
+    <!-- COUNTDOWN OVERLAY -->
+    <div id="countdown-overlay" class="status-overlay">
+      <div class="status-card">
+        <h2 id="countdown-title">AUCTION BEGINS IN</h2>
+        <div id="countdown-number" class="status-timer">10</div>
+        <div id="countdown-banner" class="status-msg" style="display:none; color: var(--sold); font-size: 40px; font-family: 'Oswald', sans-serif;">LET'S BEGIN!</div>
+      </div>
+    </div>
+
+    <!-- COMPLETED OVERLAY -->
+    <div id="completed-overlay" class="status-overlay">
+      <h2 style="font-size: 60px; text-transform: uppercase;">AUCTION COMPLETED</h2>
+      <p class="status-msg">THANK YOU FOR WATCHING</p>
+    </div>
+
+    <div id="showcase-overlay" class="status-overlay" style="display:none; flex-direction:column; align-items:center; justify-content:center;">
+      <div id="showcase-logo-container" style="margin-bottom: 20px;">
+         <img id="showcase-logo" src="" style="max-height: 120px; object-fit: contain; display:none;">
+      </div>
+      <h2 id="showcase-title" style="font-size: 50px; text-transform: uppercase; color: var(--theme-accent);">TEAM SHOWCASE</h2>
+      <p id="showcase-msg" class="status-msg">REVIEWING SQUAD</p>
+    </div>
+
+    <!-- LOWER THIRD -->
+    <div id="lower-third">
+      
+      <!-- 1. BIDDING CARD -->
+      <div id="bidding-card" class="graphic-card">
+        <div class="photo-area">
+          <div class="photo-fallback"></div>
+          <img id="bidding-photo" src="" alt="" style="opacity: 0">
+        </div>
+        <div class="details-area">
+          <div id="bidding-name" class="player-name"></div>
+          <div id="bidding-meta" class="player-meta"></div>
+          <div class="badge-container">
+            <div class="bid-box">
+              <span class="bid-label">CURRENT BID</span>
+              <span id="bidding-points"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. SOLD CARD -->
+      <div id="sold-card" class="graphic-card">
+        <div class="photo-area">
+          <div class="photo-fallback"></div>
+          <img id="sold-photo" src="" alt="" style="opacity: 0">
+        </div>
+        <div class="details-area">
+          <div class="sold-badge">SOLD</div>
+          <div id="sold-name" class="player-name"></div>
+          <div id="sold-meta" class="player-meta"></div>
+          <div class="badge-container">
+            <div class="team-info">
+              <img id="sold-team-logo" class="team-logo" src="" alt="">
+              <span id="sold-team-name" class="team-name"></span>
+            </div>
+            <div id="sold-points" class="bid-box">
+              <span class="bid-label">FINAL BID</span>
+              <span id="sold-points-val"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. UNSOLD CARD -->
+      <div id="unsold-card" class="graphic-card">
+        <div class="photo-area">
+          <div class="photo-fallback"></div>
+          <img id="unsold-photo" src="" alt="" style="opacity: 0">
+        </div>
+        <div class="details-area">
+          <div class="unsold-badge">UNSOLD</div>
+          <div id="unsold-name" class="player-name"></div>
+          <div id="unsold-meta" class="player-meta"></div>
+          <div class="badge-container">
+            <div class="bid-box" style="background: rgba(255,255,255,0.1); color: #cbd5e1; box-shadow: none;">
+              <span class="bid-label" style="margin-right: 0;">NO BIDS RECEIVED</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="overlay.js"></script>
+</body>
+</html>

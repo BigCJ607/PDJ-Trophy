@@ -1,0 +1,21 @@
+import fs from 'node:fs/promises';
+import { Workbook, SpreadsheetFile } from '@oai/artifact-tool';
+
+const headers=['Full Name','Player Type','Player Style','Age','CricHeroes Account No or Id','Upload Your Picture','Team'];
+const first=['Aarav','Rohan','Aditya','Siddhesh','Nikhil','Pranav','Omkar','Karan','Vedant','Yash','Saurabh','Manish','Akash','Ritesh','Sanket','Harshal','Shubham','Aniket','Ravindra','Tejas'];
+const last=['More','Deshmukh','Kulkarni','Patil','Jadhav','Joshi','Shinde','Chavan','Pawar','Kale','Bhosale','Mane','Gawade','Kamble','Shelke','Ghadge','Sawant','Bansode','Dhumal','Gore'];
+const types=['All-rounder','Batsman','Bowler','Wicket Keeper'];
+const styles=['Right Hand Batsman','Left Hand Batsman','Right Hand Bowler','Left Hand Bowler','Right Hand Batsman/Bowler'];
+const teams=['','','Team A','','Team B','','','','Team C','','','','','','','','','','',''];
+const rows=first.map((name,i)=>[`${name} ${last[i]}`,types[i%types.length],styles[i%styles.length],22+i%12,String(120000+i*483),'https://drive.google.com/open?id=1vEVP_iveA59alTct8TsWpjWdV1Y2aLFX',teams[i]]);
+const workbook=Workbook.create();const sheet=workbook.worksheets.add('Players');sheet.showGridLines=false;
+sheet.getRange('A1:G1').values=[headers];sheet.getRange('A2:G21').values=rows;
+sheet.getRange('A1:G1').format={fill:'#18342D',font:{bold:true,color:'#FFFFFF'},horizontalAlignment:'center',verticalAlignment:'center'};
+sheet.getRange('A2:G21').format={borders:{preset:'insideHorizontal',style:'thin',color:'#D9E0D8'},verticalAlignment:'center'};
+sheet.getRange('A1:G21').format.wrapText=true;sheet.getRange('A1:G21').format.rowHeight=23;sheet.getRange('A1:G1').format.rowHeight=30;
+['A','B','C','D','E','F','G'].forEach((col,i)=>sheet.getRange(`${col}:${col}`).format.columnWidth=[23,16,28,9,25,54,15][i]);
+sheet.freezePanes.freezeRows(1);sheet.getRange('G2:G21').dataValidation={rule:{type:'list',values:['','Team A','Team B','Team C','Team D','Team E']}};
+await fs.mkdir('outputs/sample-auction-data',{recursive:true});
+const preview=await workbook.render({sheetName:'Players',range:'A1:G21',scale:1,format:'png'});await fs.writeFile('outputs/sample-auction-data/preview.png',new Uint8Array(await preview.arrayBuffer()));
+const output=await SpreadsheetFile.exportXlsx(workbook);await output.save('outputs/sample-auction-data/SCPL_sample_player_data.xlsx');
+console.log((await workbook.inspect({kind:'table',range:'Players!A1:G6',include:'values',tableMaxRows:6,tableMaxCols:7})).ndjson);

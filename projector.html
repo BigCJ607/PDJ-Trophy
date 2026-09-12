@@ -1,0 +1,345 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="referrer" content="no-referrer" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PDJ TROPHY 2026 — LIVE BROADCAST</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@500;700;800&family=Manrope:wght@700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="projector.js" defer></script>
+</head>
+<body class="projector-body" data-theme="green">
+  <div class="noise"></div>
+
+  <!-- ENABLE AUDIO OVERLAY FOR BROWSER AUTOPLAY -->
+  <div id="audioEnableOverlay" class="proj-audio-overlay hidden">
+    <div class="proj-audio-card">
+      <div class="proj-brand-mini">
+        <img src="pdj_logo.png" alt="PDJ Crest" class="hero-crest-logo" onerror="this.onerror=null; this.src='favicon.svg';">
+        <span>PDJ TROPHY 2026</span>
+      </div>
+      <h2>AUCTION AUDIO</h2>
+      <p>Enable countdown sound effects for live auction broadcast?</p>
+      <button id="enableAudioBtn" class="btn-enable-audio" onclick="initAudioContext()">🔊 ENABLE AUCTION SOUND</button>
+    </div>
+  </div>
+
+  <!-- PRE-AUCTION WAITING OVERLAY -->
+  <div id="preAuctionOverlay" class="proj-broadcast-overlay hidden">
+    <div class="proj-broadcast-card">
+      <div class="proj-brand-hero">
+        <img src="pdj_logo.png" alt="PDJ Trophy 2026 Logo" class="hero-brand-logo" onerror="this.onerror=null; this.src='favicon.svg';">
+        <h1>PDJ TROPHY 2026</h1>
+        <p class="hero-tag">SEASON 1 CRICKET AUCTION</p>
+      </div>
+      <div class="hero-status-pill">
+        <span class="pulse-dot"></span> AUCTION WILL BEGIN SHORTLY
+      </div>
+      <p class="hero-subtext">Please stay tuned for the live bidding</p>
+    </div>
+  </div>
+
+  <!-- COUNTDOWN BROADCAST OVERLAY (10 -> 1 -> LET'S BEGIN / LET'S CONTINUE) -->
+  <div id="countdownOverlay" class="proj-broadcast-overlay hidden">
+    <div class="proj-countdown-card">
+      <div class="proj-brand-mini">
+        <img src="pdj_logo.png" alt="PDJ Crest" onerror="this.onerror=null; this.src='favicon.svg';">
+        <span>PDJ TROPHY 2026</span>
+      </div>
+      <div id="countdownLabel" class="countdown-label">AUCTION BEGINS IN</div>
+      <div id="countdownNumber" class="countdown-number">10</div>
+      <div id="countdownBanner" class="countdown-banner hidden">LET'S BEGIN!</div>
+    </div>
+  </div>
+
+  <!-- FILTER & ROUND TRANSITION BROADCAST OVERLAY -->
+  <div id="filterTransitionOverlay" class="proj-broadcast-overlay hidden">
+    <div class="proj-transition-card">
+      <div class="proj-brand-mini">
+        <img src="pdj_logo.png" alt="PDJ Crest" onerror="this.onerror=null; this.src='favicon.svg';">
+        <span>PDJ TROPHY 2026</span>
+      </div>
+      <div id="filterTransitionSubtitle" class="transition-subtitle">NOW SELECTING</div>
+      <h1 id="filterTransitionTitle" class="transition-title">BATSMEN</h1>
+    </div>
+  </div>
+
+  <!-- BREAK BROADCAST OVERLAY -->
+  <div id="breakOverlay" class="proj-broadcast-overlay hidden">
+    <div class="proj-break-card">
+      <div class="proj-brand-hero">
+        <img src="pdj_logo.png" alt="PDJ Crest" class="hero-crest" onerror="this.onerror=null; this.src='favicon.svg';">
+        <h1>PDJ TROPHY 2026</h1>
+      </div>
+      <div class="break-tag">☕ AUCTION BREAK</div>
+      <div id="breakTimerDisplay" class="break-timer">05:00</div>
+      <p id="breakStatusMessage" class="break-subtext">Auction will resume shortly</p>
+    </div>
+  </div>
+
+  <!-- FULL-SCREEN TEAM SQUAD BROADCAST OVERLAY -->
+  <div id="squadDisplayOverlay" class="proj-squad-overlay hidden">
+    <div class="proj-squad-card">
+      <div class="proj-squad-header">
+        <div style="display:flex; align-items:center; gap:20px;">
+          <div id="sqLogo" class="proj-squad-logo">TA</div>
+          <div>
+            <h1 id="sqTeamName" class="proj-squad-team-name">TEAM ALPHA</h1>
+            <span class="proj-squad-subtitle">OFFICIAL SQUAD ROSTER • PDJ TROPHY 2026</span>
+          </div>
+        </div>
+        <div class="proj-squad-stats-banner">
+          <div class="sq-stat-card">
+            <span class="sq-stat-lbl">PLAYERS</span>
+            <span id="sqPlayerCount" class="sq-stat-val">0</span>
+          </div>
+          <div class="sq-stat-card spent">
+            <span class="sq-stat-lbl">SPENT PTS</span>
+            <span id="sqSpentPts" class="sq-stat-val spent">0 PTS</span>
+          </div>
+          <div class="sq-stat-card remaining">
+            <span class="sq-stat-lbl">REMAINING PURSE</span>
+            <span id="sqRemainingPts" class="sq-stat-val remaining">20,000 PTS</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="proj-squad-table-container">
+        <table class="proj-squad-table">
+          <thead>
+            <tr>
+              <th style="width: 75px; text-align: center;">SR NO.</th>
+              <th style="text-align: left;">PLAYER NAME</th>
+              <th style="text-align: left;">ROLE</th>
+              <th style="text-align: left;">HAND / STYLE</th>
+              <th style="width: 100px; text-align: center;">AGE</th>
+              <th style="text-align: left;">POST / PROFESSION</th>
+              <th style="width: 130px; text-align: right;">POINTS</th>
+            </tr>
+          </thead>
+          <tbody id="sqTableBody">
+            <!-- Dynamic Squad Rows -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- DRAMATIC SOLD BROADCAST RESULT OVERLAY -->
+  <div id="soldOverlay" class="proj-sold-broadcast-screen hidden">
+    <div class="proj-sold-broadcast-bg-glow"></div>
+    <div class="proj-sold-broadcast-container">
+      <!-- BRAND HEADER -->
+      <div class="proj-sold-brand-header anim-phase-2">
+        <img src="pdj_logo.png" alt="PDJ Crest" class="proj-sold-brand-logo" onerror="this.onerror=null; this.src='favicon.svg';">
+        <span class="proj-sold-brand-text">PDJ TROPHY 2026</span>
+        <span class="proj-sold-live-tag"><span class="pulse-dot"></span> AUCTION RESULT</span>
+      </div>
+
+      <!-- MAIN 3-COLUMN BROADCAST RESULT GRID -->
+      <div class="proj-sold-main-grid">
+        <!-- LEFT: PLAYER PHOTO FRAME -->
+        <div class="proj-sold-photo-col anim-phase-3">
+          <div class="proj-sold-photo-frame" id="soldPhotoFrame">
+            <img id="soldPlayerPhotoImg" class="proj-sold-photo-img hidden" src="" alt="Player Photo">
+            <span id="soldPlayerInitials" class="proj-sold-photo-initials">PM</span>
+          </div>
+        </div>
+
+        <!-- CENTER: SOLD STATUS, PLAYER NAME & ROLE -->
+        <div class="proj-sold-info-col">
+          <div class="proj-sold-status-badge anim-phase-3">SOLD</div>
+          <h1 id="soldPlayerName" class="proj-sold-player-name anim-phase-4">PLAYER NAME</h1>
+          <div id="soldPlayerDetails" class="proj-sold-player-details anim-phase-5">BATSMAN • RIGHT HAND BATSMAN/BOWLER</div>
+        </div>
+
+        <!-- RIGHT: DEDICATED "SOLD TO" PANEL -->
+        <div class="proj-sold-team-col anim-phase-6">
+          <div class="proj-sold-team-card">
+            <span class="proj-broadcast-panel-label">SOLD TO</span>
+            <div id="soldTeamLogoWrapper" class="proj-sold-team-logo-box">
+              <img id="soldTeamLogoImg" class="proj-sold-team-logo-img hidden" src="" alt="Team Logo" onerror="this.classList.add('hidden'); const ini = document.getElementById('soldTeamLogoInitials'); if (ini) { ini.classList.remove('hidden'); ini.style.display='block'; }">
+              <div id="soldTeamLogoInitials" class="proj-sold-team-logo-initials hidden" style="display: none;"></div>
+            </div>
+            <div id="soldTeamNameBadge" class="proj-sold-team-name-text">TEAM NABLILAL</div>
+
+            <div class="proj-sold-bid-panel">
+              <span class="proj-broadcast-panel-label">FINAL BID</span>
+              <div id="soldPointsValue" class="proj-sold-bid-value">2000 POINTS</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DRAMATIC UNSOLD BROADCAST RESULT OVERLAY -->
+  <div id="unsoldOverlay" class="proj-unsold-broadcast-screen hidden">
+    <div class="proj-unsold-broadcast-bg-glow"></div>
+    <div class="proj-unsold-broadcast-container">
+      <!-- BRAND HEADER -->
+      <div class="proj-unsold-brand-header anim-phase-2">
+        <img src="pdj_logo.png" alt="PDJ Crest" class="proj-unsold-brand-logo" onerror="this.onerror=null; this.src='favicon.svg';">
+        <span class="proj-unsold-brand-text">PDJ TROPHY 2026</span>
+        <span class="proj-unsold-live-tag"><span class="pulse-dot-red"></span> AUCTION RESULT</span>
+      </div>
+
+      <!-- MAIN UNSOLD GRID -->
+      <div class="proj-unsold-main-grid">
+        <!-- LEFT: PLAYER PHOTO FRAME -->
+        <div class="proj-unsold-photo-col anim-phase-3">
+          <div class="proj-unsold-photo-frame" id="unsoldPhotoFrame">
+            <img id="unsoldPlayerPhotoImg" class="proj-unsold-photo-img hidden" src="" alt="Player Photo">
+            <span id="unsoldPlayerInitials" class="proj-unsold-photo-initials">PM</span>
+          </div>
+        </div>
+
+        <!-- CENTER/RIGHT: UNSOLD BADGE, PLAYER NAME, DETAILS & ROUND BADGE -->
+        <div class="proj-unsold-info-col">
+          <div class="proj-unsold-status-badge anim-phase-3">UNSOLD</div>
+          <h1 id="unsoldPlayerName" class="proj-unsold-player-name anim-phase-4">RITESH AMBEWALE</h1>
+          <div id="unsoldPlayerDetails" class="proj-unsold-player-details anim-phase-5">BATSMAN • RIGHT HAND BATSMAN/BOWLER</div>
+          <div class="proj-unsold-round-wrapper anim-phase-6">
+            <div id="unsoldRoundText" class="proj-unsold-round-badge">UNSOLD ROUND 1</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- AUCTION COMPLETED BROADCAST OVERLAY -->
+  <div id="auctionCompletedOverlay" class="proj-broadcast-overlay hidden">
+    <div class="proj-completed-card">
+      <div class="proj-brand-hero">
+        <img src="pdj_logo.png" alt="PDJ Crest" class="hero-crest" onerror="this.onerror=null; this.src='favicon.svg';">
+        <h1>PDJ TROPHY 2026</h1>
+        <p class="hero-tag">AUCTION COMPLETED — THANK YOU!</p>
+      </div>
+      
+      <div class="completed-summary-bar">
+        <div class="comp-stat"><span class="lbl">TOTAL PLAYERS</span><b id="compTotal">0</b></div>
+        <div class="comp-stat sold"><span class="lbl">PLAYERS SOLD</span><b id="compSold">0</b></div>
+        <div class="comp-stat unsold"><span class="lbl">UNSOLD PLAYERS</span><b id="compUnsold">0</b></div>
+      </div>
+
+      <div id="completedTeamsGrid" class="completed-teams-grid">
+        <!-- Dynamic Final Team Squad Summaries -->
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN BROADCAST STAGE (COMPACT 100VH 16:9 BROADCAST COMPOSITION) -->
+  <main class="proj-broadcast-stage">
+    <!-- Compact Top Broadcast Header -->
+    <header class="proj-top-header">
+      <div class="proj-brand-left">
+        <span class="proj-logo-icon"><img src="pdj_logo.png" alt="PDJ Crest" onerror="this.onerror=null; this.src='favicon.svg';"></span>
+        <div>
+          <strong class="proj-main-title">PDJ TROPHY 2026</strong>
+          <span class="proj-sub-title">SEASON 1 CRICKET AUCTION</span>
+        </div>
+      </div>
+
+      <div class="proj-live-indicator">
+        <span class="pulse-dot"></span> LIVE AUCTION
+      </div>
+
+      <div class="proj-header-right">
+        <div class="proj-counter-pill">
+          <span id="pPosition">CONNECTING...</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Center Live Broadcast Arena -->
+    <section class="proj-broadcast-arena" id="playerArena">
+      <!-- LEFT: LARGE RECTANGULAR PORTRAIT FRAME -->
+      <div class="proj-portrait-column">
+        <div class="portrait-card-frame" id="pPhotoFrame">
+          <img id="pPhotoImage" class="portrait-photo-img hidden" alt="Player Photo" />
+          <span id="pInitials">—</span>
+        </div>
+      </div>
+
+      <!-- RIGHT: PLAYER NAME, BADGES, COMPACT PROFILE GRID & HUGE CURRENT BID HERO -->
+      <div class="proj-hero-column">
+        <div class="proj-hero-identity">
+          <h1 id="pName" class="proj-hero-player-name">CONNECTING TO AUCTION...</h1>
+          <div class="proj-hero-badges">
+            <span id="pRole" class="proj-role-badge">LIVE AUCTION</span>
+            <span id="pBatting" class="proj-style-badge">PLEASE STAND BY</span>
+          </div>
+        </div>
+
+        <!-- Compact 2-Column Player Details Profile Grid -->
+        <div class="proj-all-details-grid">
+          <div class="proj-detail-card">
+            <span class="proj-detail-lbl">PLAYER TYPE / ROLE</span>
+            <span id="pCategory" class="proj-detail-val">—</span>
+          </div>
+
+          <div class="proj-detail-card">
+            <span class="proj-detail-lbl">PLAYING STYLE / HAND</span>
+            <span id="pSpeciality" class="proj-detail-val">—</span>
+          </div>
+
+          <div class="proj-detail-card span-2">
+            <span class="proj-detail-lbl">PROFESSION / POST (व्यवसाय / पद)</span>
+            <span id="pProfession" class="proj-detail-val">—</span>
+          </div>
+
+          <div class="proj-detail-card">
+            <span class="proj-detail-lbl">AGE</span>
+            <span id="pAge" class="proj-detail-val">—</span>
+          </div>
+
+          <div class="proj-detail-card">
+            <span class="proj-detail-lbl">PHONE / CONTACT</span>
+            <span id="pPhone" class="proj-detail-val">—</span>
+          </div>
+
+          <div class="proj-detail-card span-2">
+            <span class="proj-detail-lbl">CRICHEROES ACCOUNT / ID</span>
+            <span id="pCricId" class="proj-detail-val">—</span>
+          </div>
+        </div>
+
+        <!-- Huge Current Bid Hero Box -->
+        <div class="proj-hero-bid-container" id="bidContainer">
+          <div class="proj-hero-bid-header-row">
+            <span class="proj-hero-bid-lbl">CURRENT BID</span>
+            <span class="proj-hero-base-points">BASE <b id="pBasePoints">—</b></span>
+          </div>
+          
+          <div class="proj-hero-bid-row">
+            <span id="pCurrentBid" class="proj-hero-bid-number">—</span>
+            <span class="proj-hero-bid-unit">POINTS</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Compact Bottom Broadcast Status Bar -->
+    <footer class="proj-bottom-bar">
+      <div class="proj-broadcast-counters">
+        <div class="counter-item"><span class="cnt-lbl">PLAYERS</span><b id="pTotalStats">0</b></div>
+        <div class="counter-divider"></div>
+        <div class="counter-item avail"><span class="cnt-lbl">AVAILABLE</span><b id="pAvailStats">0</b></div>
+        <div class="counter-divider"></div>
+        <div class="counter-item sold"><span class="cnt-lbl">SOLD</span><b id="pSoldStats">0</b></div>
+        <div class="counter-divider"></div>
+        <div class="counter-item unsold"><span class="cnt-lbl">UNSOLD</span><b id="pUnsoldStats">0</b></div>
+      </div>
+
+      <div id="connStatus" class="proj-conn-status connecting">
+        <span class="conn-dot"></span> <span id="connLabel">● CONNECTING...</span>
+      </div>
+    </footer>
+  </main>
+</body>
+</html>

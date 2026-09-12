@@ -1,0 +1,17 @@
+{
+  "name": "scpl-auction-desk",
+  "version": "1.0.0",
+  "description": "SCPL Auction Desk",
+  "main": "server.mjs",
+  "scripts": {
+    "dev": "node server.mjs",
+    "start": "node server.mjs",
+    "build": "powershell -Command \"if (!(Test-Path 'dist')) { New-Item -ItemType Directory -Path 'dist' }; Copy-Item index.html, projector.html, app.js, projector.js, styles.css, favicon.svg, pdj_logo.png dist/ -Force; Copy-Item outputs dist/outputs -Recurse -Force; Set-Content -Path 'dist/_redirects' -Value '/* /index.html 200'\""
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "xlsx": "^0.18.5"
+  }
+}
