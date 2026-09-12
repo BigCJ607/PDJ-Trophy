@@ -624,22 +624,7 @@ function redoNextAction() {
   render();
 }
 
-function startBreakMode() {
-  auctionPhase = 'BREAK';
-  breakSecondsRemaining = 300;
-  breakIsRunning = true;
-  breakIsNoTimer = false;
-  broadcastOverlay = {
-    type: 'BREAK',
-    timestamp: Date.now()
-  };
-  showToast('☕ Auction Break started!', 'success');
-  addHistory('Admin initiated Auction Break mode.');
-  const dlg = $('breakModal');
-  if (dlg) dlg.showModal();
-  syncStateToServer();
-  render();
-}
+// startBreakMode defined below (line ~1643) — single canonical definition
 
 function confirmEndAuction() {
   auctionPhase = 'AUCTION_COMPLETED';
@@ -1642,14 +1627,17 @@ function startCountdownBroadcast(isResume = false) {
 
 function startBreakMode() {
   auctionPhase = 'BREAK';
-  breakIsRunning = !breakIsNoTimer;
+  // Always reset to 5 minutes when a fresh break is started
+  breakSecondsRemaining = 300;
+  breakIsRunning = true;
+  breakIsNoTimer = false;
   broadcastOverlay = {
     type: 'BREAK',
     timestamp: Date.now()
   };
   showToast(`⏸ Auction placed on BREAK`, 'success');
   addHistory(`Admin placed auction on break.`);
-  
+
   const m = $('breakModal');
   if (m) m.showModal();
 
@@ -1660,18 +1648,48 @@ function startBreakMode() {
 
 function startBreakTimerInterval() {
   if (breakTimerInterval) clearInterval(breakTimerInterval);
+  breakTimerInterval = null;
+  if (breakIsNoTimer || !breakIsRunning) return; // don't start if no-timer or already stopped
   breakTimerInterval = setInterval(() => {
     if (auctionPhase === 'BREAK' && breakIsRunning && !breakIsNoTimer) {
       if (breakSecondsRemaining > 0) {
         breakSecondsRemaining--;
         updateBreakTimerUI();
+        syncStateToServer();
       } else {
+        // Timer hit zero — stop
         breakIsRunning = false;
         clearInterval(breakTimerInterval);
+        breakTimerInterval = null;
+        updateBreakTimerUI();
+        syncStateToServer();
       }
-      syncStateToServer();
     }
   }, 1000);
+}
+
+function stopBreakTimer() {
+  breakIsRunning = false;
+  if (breakTimerInterval) {
+    clearInterval(breakTimerInterval);
+    breakTimerInterval = null;
+  }
+  updateBreakTimerUI();
+  syncStateToServer();
+  render();
+}
+
+function resetBreakTimer() {
+  breakSecondsRemaining = 300;
+  breakIsNoTimer = false;
+  breakIsRunning = false;
+  if (breakTimerInterval) {
+    clearInterval(breakTimerInterval);
+    breakTimerInterval = null;
+  }
+  updateBreakTimerUI();
+  syncStateToServer();
+  render();
 }
 
 function confirmEndAuction() {
@@ -1978,6 +1996,8 @@ function initEventListeners() {
       breakIsNoTimer = false;
       breakSecondsRemaining = Math.max(60, breakSecondsRemaining - 60);
       breakIsRunning = true;
+      startBreakTimerInterval();
+      updateBreakTimerUI();
       syncStateToServer();
       render();
     };
@@ -1989,6 +2009,8 @@ function initEventListeners() {
       breakIsNoTimer = false;
       breakSecondsRemaining += 60;
       breakIsRunning = true;
+      startBreakTimerInterval();
+      updateBreakTimerUI();
       syncStateToServer();
       render();
     };
@@ -2000,6 +2022,8 @@ function initEventListeners() {
       breakIsNoTimer = false;
       breakSecondsRemaining += 120;
       breakIsRunning = true;
+      startBreakTimerInterval();
+      updateBreakTimerUI();
       syncStateToServer();
       render();
     };
@@ -2011,6 +2035,8 @@ function initEventListeners() {
       breakIsNoTimer = false;
       breakSecondsRemaining += 300;
       breakIsRunning = true;
+      startBreakTimerInterval();
+      updateBreakTimerUI();
       syncStateToServer();
       render();
     };
@@ -2033,6 +2059,16 @@ function initEventListeners() {
       if (m) m.close();
       startCountdownBroadcast(true);
     };
+  }
+
+  const btnBreakStop = $('btnBreakStop');
+  if (btnBreakStop) {
+    btnBreakStop.onclick = () => stopBreakTimer();
+  }
+
+  const btnBreakReset = $('btnBreakReset');
+  if (btnBreakReset) {
+    btnBreakReset.onclick = () => resetBreakTimer();
   }
 
   document.querySelectorAll('.role-filter-btn').forEach(btn => {
